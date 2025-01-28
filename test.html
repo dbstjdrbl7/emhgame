@@ -27,13 +27,9 @@
     // 게임 정보 추가 함수
     window.addGame = function () {
       const gameNameInput = document.getElementById('gameNameInput');
-      const discountInput1 = document.getElementById('discountInput1');
-      const discountInput2 = document.getElementById('discountInput2');
-      const discountInput3 = document.getElementById('discountInput3');
-      const discountInput4 = document.getElementById('discountInput4');
-      const discountInput5 = document.getElementById('discountInput5');
+      const discountInput = document.getElementById('discountInput');
       const descriptionInput = document.getElementById('descriptionInput');
-      
+
       const gameName = gameNameInput.value.trim();
       const discount = discountInput.value.trim();
       const description = descriptionInput.value.trim();
@@ -89,26 +85,15 @@
 
     // 게임 수정 함수
     window.editGame = function (key, name, discount, description) {
-     const gameNameInput = document.getElementById('gameNameInput');
-      const discountInput1 = document.getElementById('discountInput1');
-      const discountInput2 = document.getElementById('discountInput2');
-      const discountInput3 = document.getElementById('discountInput3');
-      const discountInput4 = document.getElementById('discountInput4');
-      const discountInput5 = document.getElementById('discountInput5');
+      const gameNameInput = document.getElementById('gameNameInput');
+      const discountInput = document.getElementById('discountInput');
       const descriptionInput = document.getElementById('descriptionInput');
+      const saveButton = document.getElementById('saveButton');
 
-      const gameNameInput = gameNameInput.value.trim();
-      const discountInput1 = discountInput1.value.trim();
-      const discountInput2 = discountInput2.value.trim();
-      const discountInput3 = discountInput3.value.trim();
-      const discountInput4 = discountInput4.value.trim();
-      const discountInput5 = discountInput5.value.trim();
-      const descriptionInput = descriptionInput.value.trim();
-     
-      if (!gameNameInput || !discountInput1 || !discountInput2 || !discountInput3 || !discountInput4 || !discountInput5 || !descriptionInput) {
-        alert('모든 필드를 입력하세요.');
-        return;
-      }
+      // 입력 필드에 기존 값 채우기
+      gameNameInput.value = name;
+      discountInput.value = discount;
+      descriptionInput.value = description;
 
       // 수정 버튼을 저장 버튼으로 변경
       saveButton.style.display = 'inline-block';
@@ -119,23 +104,15 @@
 
     // 게임 정보 수정 저장 함수
     window.updateGame = function (key) {
-       const gameNameInput = document.getElementById('gameNameInput');
-      const discountInput1 = document.getElementById('discountInput1');
-      const discountInput2 = document.getElementById('discountInput2');
-      const discountInput3 = document.getElementById('discountInput3');
-      const discountInput4 = document.getElementById('discountInput4');
-      const discountInput5 = document.getElementById('discountInput5');
+      const gameNameInput = document.getElementById('gameNameInput');
+      const discountInput = document.getElementById('discountInput');
       const descriptionInput = document.getElementById('descriptionInput');
 
-      const gameNameInput = gameNameInput.value.trim();
-      const discountInput1 = discountInput1.value.trim();
-      const discountInput2 = discountInput2.value.trim();
-      const discountInput3 = discountInput3.value.trim();
-      const discountInput4 = discountInput4.value.trim();
-      const discountInput5 = discountInput5.value.trim();
-      const descriptionInput = descriptionInput.value.trim();
-     
-      if (!gameNameInput || !discountInput1 || !discountInput2 || !discountInput3 || !discountInput4 || !discountInput5 || !descriptionInput) {
+      const gameName = gameNameInput.value.trim();
+      const discount = discountInput.value.trim();
+      const description = descriptionInput.value.trim();
+
+      if (!gameName || !discount || !description) {
         alert('모든 필드를 입력하세요.');
         return;
       }
@@ -173,11 +150,7 @@
   <h1>게임 할인 정보 관리</h1>
 
   <input type="text" id="gameNameInput" placeholder="게임 이름 입력">
-  <input type="text" id="discountInput1" placeholder="할인 가격 입력1">
-  <input type="text" id="discountInput2" placeholder="할인 가격 입력2">
-  <input type="text" id="discountInput3" placeholder="할인 가격 입력3">
-  <input type="text" id="discountInput4" placeholder="버튼 이름">
-  <input type="text" id="discountInput5" placeholder="링크">
+  <input type="text" id="discountInput" placeholder="할인 가격 입력">
   <textarea id="descriptionInput" placeholder="게임 설명 입력" rows="4"></textarea>
   <button onclick="addGame()">추가</button>
   <button id="saveButton">저장</button>
