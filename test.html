@@ -15,7 +15,8 @@
     li { padding: 10px; background: #f4f4f4; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
     li button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
   </style>
-   
+   <script>import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";</script>
 </head>
 <body>
 
@@ -28,8 +29,7 @@
   <ul id="userList"></ul>
 
   <script>
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+
     
     // Firebase 초기화
     const firebaseConfig = {
