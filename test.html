@@ -15,10 +15,12 @@
     li { padding: 10px; background: #f4f4f4; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
     li button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
   </style>
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
 </head>
 <body>
 
-  <h1>Firebase 유저 관리 시스템</h1>
+  <h1>Firebase 유저 관리 시스템1</h1>
 
   <input type="text" id="userInput" placeholder="유저 이름 입력">
   <button onclick="addUser()">추가</button>
@@ -27,8 +29,7 @@
   <ul id="userList"></ul>
 
   <script>
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+   
     // Firebase 초기화
     const firebaseConfig = {
       apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw", // Firebase 프로젝트 API 키
