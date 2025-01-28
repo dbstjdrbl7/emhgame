@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase 유저 관리</title>
+  <title>게임 할인 정보 관리</title>
   <script type="module">
     // Firebase SDK 모듈 가져오기
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
@@ -24,63 +24,84 @@
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
 
-    // 유저 추가 함수
-    window.addUser = function () {
-      const userInput = document.getElementById('userInput');
-      const userName = userInput.value.trim();
-      if (!userName) {
-        alert('유저 이름을 입력하세요.');
+    // 게임 정보 추가 함수
+    window.addGame = function () {
+      const gameNameInput = document.getElementById('gameNameInput');
+      const discountInput = document.getElementById('discountInput');
+      const descriptionInput = document.getElementById('descriptionInput');
+
+      const gameName = gameNameInput.value.trim();
+      const discount = discountInput.value.trim();
+      const description = descriptionInput.value.trim();
+
+      if (!gameName || !discount || !description) {
+        alert('모든 필드를 입력하세요.');
         return;
       }
 
-      // Realtime Database에 유저 추가
-      const userRef = ref(database, 'users');
-      push(userRef, userName); // 데이터 저장
-      userInput.value = ''; // 입력 필드 초기화
+      // Realtime Database에 게임 정보 추가
+      const gamesRef = ref(database, 'games');
+      push(gamesRef, {
+        name: gameName,
+        discount: discount,
+        description: description
+      });
+
+      // 입력 필드 초기화
+      gameNameInput.value = '';
+      discountInput.value = '';
+      descriptionInput.value = '';
     };
 
-    // 유저 목록 실시간 업데이트
-    const userRef = ref(database, 'users');
-    onValue(userRef, (snapshot) => {
-      const userList = document.getElementById('userList');
-      userList.innerHTML = ''; // 기존 목록 초기화
+    // 게임 목록 실시간 업데이트
+    const gamesRef = ref(database, 'games');
+    onValue(gamesRef, (snapshot) => {
+      const gameList = document.getElementById('gameList');
+      gameList.innerHTML = ''; // 기존 목록 초기화
       snapshot.forEach((childSnapshot) => {
         const key = childSnapshot.key; // Firebase에서 데이터의 고유 키
-        const userName = childSnapshot.val(); // 유저 이름
+        const gameData = childSnapshot.val(); // 게임 정보 (객체)
 
         // 목록에 추가
         const li = document.createElement('li');
         li.innerHTML = `
-          <span>${userName}</span>
-          <button onclick="deleteUser('${key}')">삭제</button>
+          <div>
+            <strong>게임 이름:</strong> ${gameData.name}<br>
+            <strong>할인 가격:</strong> ${gameData.discount}<br>
+            <strong>설명:</strong> ${gameData.description}
+          </div>
+          <button onclick="deleteGame('${key}')">삭제</button>
         `;
-        userList.appendChild(li);
+        gameList.appendChild(li);
       });
     });
 
-    // 유저 삭제 함수
-    window.deleteUser = function (key) {
-      const userRef = ref(database, 'users/' + key);
-      remove(userRef); // 해당 키의 데이터 삭제
+    // 게임 삭제 함수
+    window.deleteGame = function (key) {
+      const gameRef = ref(database, 'games/' + key);
+      remove(gameRef); // 해당 키의 데이터 삭제
     };
   </script>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     h1 { color: #333; }
-    input { padding: 10px; font-size: 16px; margin-right: 10px; }
+    input, textarea { padding: 10px; font-size: 16px; margin-right: 10px; margin-bottom: 10px; width: calc(100% - 22px); }
     button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
     ul { list-style: none; padding: 0; margin-top: 20px; }
-    li { padding: 10px; background: #f4f4f4; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
+    li { padding: 10px; background: #f4f4f4; margin-bottom: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+    li div { max-width: 80%; }
     li button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
   </style>
 </head>
 <body>
-  <h1>Firebase 유저 관리 시스템</h1>
+  <h1>게임 할인 정보 관리</h1>
 
-  <input type="text" id="userInput" placeholder="유저 이름 입력">
-  <button onclick="addUser()">추가</button>
+  <input type="text" id="gameNameInput" placeholder="게임 이름 입력">
+  <input type="text" id="discountInput" placeholder="할인 가격 입력">
+  <textarea id="descriptionInput" placeholder="게임 설명 입력" rows="4"></textarea>
+  <button onclick="addGame()">추가</button>
 
-  <h2>유저 목록</h2>
-  <ul id="userList"></ul>
+  <h2>게임 목록</h2>
+  <ul id="gameList"></ul>
 </body>
 </html>
