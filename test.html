@@ -3,75 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>유저 추가 및 어드민 삭제 기능</title>
+  <title>Firebase 유저 관리</title>
+  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
     h1 { color: #333; }
-    .form-group { margin-bottom: 15px; }
-    .form-group input { padding: 10px; font-size: 16px; width: 100%; }
-    .form-group button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
-    ul { list-style: none; padding: 0; }
-    li { display: flex; justify-content: space-between; padding: 10px; background: #f4f4f4; margin-bottom: 5px; border-radius: 5px; }
-    li span { flex: 1; }
+    input { padding: 10px; font-size: 16px; margin-right: 10px; }
+    button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
+    ul { list-style: none; padding: 0; margin-top: 20px; }
+    li { padding: 10px; background: #f4f4f4; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
     li button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
   </style>
 </head>
 <body>
 
-  <h1>유저 관리 시스템</h1>
+  <h1>Firebase 유저 관리 시스템</h1>
 
-  <!-- 유저 추가 폼 -->
-  <div class="form-group">
-    <input type="text" id="userInput" placeholder="유저 이름 입력">
-    <button onclick="addUser()">추가</button>
-  </div>
+  <input type="text" id="userInput" placeholder="유저 이름 입력">
+  <button onclick="addUser()">추가</button>
 
-  <!-- 유저 목록 -->
   <h2>유저 목록</h2>
   <ul id="userList"></ul>
 
   <script>
-    // LocalStorage에서 데이터를 가져와 화면에 표시
-    function loadUsers() {
-      const userList = document.getElementById('userList');
-      const users = JSON.parse(localStorage.getItem('users')) || []; // LocalStorage에서 유저 리스트 가져오기
-      userList.innerHTML = ''; // 기존 목록 초기화
-      users.forEach((user, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${user}</span>
-          <button onclick="deleteUser(${index})">삭제</button>
-        `;
-        userList.appendChild(li);
-      });
-    }
+    // Firebase 초기화
+    const firebaseConfig = {
+      apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw", // Firebase 프로젝트 API 키
+      authDomain: "emhgame-bbd5c.firebaseapp.com",
+      databaseURL: "https://emhgame-bbd5c-default-rtdb.firebaseio.com",
+      projectId: "emhgame-bbd5c",
+      storageBucket: "emhgame-bbd5c.firebasestorage.app",
+      messagingSenderId: "640920535415",
+      appId: "1:640920535415:web:dfac8b967f803d0e4fe172"
+    };
 
-    // 유저 추가
+    // Firebase 앱 초기화
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // 유저 추가 함수
     function addUser() {
       const userInput = document.getElementById('userInput');
       const userName = userInput.value.trim();
-      if (userName === '') {
+      if (!userName) {
         alert('유저 이름을 입력하세요.');
         return;
       }
 
-      const users = JSON.parse(localStorage.getItem('users')) || []; // 기존 유저 리스트 가져오기
-      users.push(userName); // 새 유저 추가
-      localStorage.setItem('users', JSON.stringify(users)); // LocalStorage에 저장
+      // Realtime Database에 유저 추가
+      const userRef = database.ref('users');
+      userRef.push(userName); // 데이터 저장
       userInput.value = ''; // 입력 필드 초기화
-      loadUsers(); // 업데이트된 목록 표시
     }
 
-    // 유저 삭제 (어드민만 사용 가능)
-    function deleteUser(index) {
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      users.splice(index, 1); // 해당 인덱스의 유저 삭제
-      localStorage.setItem('users', JSON.stringify(users)); // LocalStorage 업데이트
-      loadUsers(); // 업데이트된 목록 표시
-    }
+    // 유저 목록 실시간 업데이트
+    const userRef = database.ref('users');
+    userRef.on('value', (snapshot) => {
+      const userList = document.getElementById('userList');
+      userList.innerHTML = ''; // 기존 목록 초기화
+      snapshot.forEach((childSnapshot) => {
+        const key = childSnapshot.key; // Firebase에서 데이터의 고유 키
+        const userName = childSnapshot.val(); // 유저 이름
 
-    // 페이지 로드 시 유저 목록 불러오기
-    document.addEventListener('DOMContentLoaded', loadUsers);
+        // 목록에 추가
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${userName}</span>
+          <button onclick="deleteUser('${key}')">삭제</button>
+        `;
+        userList.appendChild(li);
+      });
+    });
+
+    // 유저 삭제 함수
+    function deleteUser(key) {
+      const userRef = database.ref('users/' + key);
+      userRef.remove(); // 해당 키의 데이터 삭제
+    }
   </script>
 
 </body>
