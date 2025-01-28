@@ -4,32 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Firebase 유저 관리</title>
-  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h1 { color: #333; }
-    input { padding: 10px; font-size: 16px; margin-right: 10px; }
-    button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
-    ul { list-style: none; padding: 0; margin-top: 20px; }
-    li { padding: 10px; background: #f4f4f4; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
-    li button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
-  </style>
-</head>
-<body>
+  <script type="module">
+    // Firebase SDK 모듈 가져오기
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
 
-  <h1>Firebase 유저 관리 시스템12</h1>
-
-  <input type="text" id="userInput" placeholder="유저 이름 입력">
-  <button onclick="addUser()">추가</button>
-
-  <h2>유저 목록</h2>
-  <ul id="userList"></ul>
-
-  <script>
-    // Firebase 초기화
+    // Firebase 설정
     const firebaseConfig = {
-      apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw", // Firebase 프로젝트 API 키
+      apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
       authDomain: "emhgame-bbd5c.firebaseapp.com",
       databaseURL: "https://emhgame-bbd5c-default-rtdb.firebaseio.com",
       projectId: "emhgame-bbd5c",
@@ -39,11 +21,11 @@
     };
 
     // Firebase 앱 초기화
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
     // 유저 추가 함수
-    function addUser() {
+    window.addUser = function () {
       const userInput = document.getElementById('userInput');
       const userName = userInput.value.trim();
       if (!userName) {
@@ -52,14 +34,14 @@
       }
 
       // Realtime Database에 유저 추가
-      const userRef = database.ref('users');
-      userRef.push(userName); // 데이터 저장
+      const userRef = ref(database, 'users');
+      push(userRef, userName); // 데이터 저장
       userInput.value = ''; // 입력 필드 초기화
-    }
+    };
 
     // 유저 목록 실시간 업데이트
-    const userRef = database.ref('users');
-    userRef.on('value', (snapshot) => {
+    const userRef = ref(database, 'users');
+    onValue(userRef, (snapshot) => {
       const userList = document.getElementById('userList');
       userList.innerHTML = ''; // 기존 목록 초기화
       snapshot.forEach((childSnapshot) => {
@@ -77,11 +59,28 @@
     });
 
     // 유저 삭제 함수
-    function deleteUser(key) {
-      const userRef = database.ref('users/' + key);
-      userRef.remove(); // 해당 키의 데이터 삭제
-    }
+    window.deleteUser = function (key) {
+      const userRef = ref(database, 'users/' + key);
+      remove(userRef); // 해당 키의 데이터 삭제
+    };
   </script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    input { padding: 10px; font-size: 16px; margin-right: 10px; }
+    button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
+    ul { list-style: none; padding: 0; margin-top: 20px; }
+    li { padding: 10px; background: #f4f4f4; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
+    li button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>Firebase 유저 관리 시스템</h1>
 
+  <input type="text" id="userInput" placeholder="유저 이름 입력">
+  <button onclick="addUser()">추가</button>
+
+  <h2>유저 목록</h2>
+  <ul id="userList"></ul>
 </body>
 </html>
