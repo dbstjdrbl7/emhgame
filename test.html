@@ -27,14 +27,22 @@
     // 게임 정보 추가 함수
     window.addGame = function () {
       const gameNameInput = document.getElementById('gameNameInput');
-      const discountInput = document.getElementById('discountInput');
+      const price1Input = document.getElementById('price1Input');
+      const price2Input = document.getElementById('price2Input');
+      const price3Input = document.getElementById('price3Input');
       const descriptionInput = document.getElementById('descriptionInput');
+      const buttonNameInput = document.getElementById('buttonNameInput');
+      const buttonLinkInput = document.getElementById('buttonLinkInput');
 
       const gameName = gameNameInput.value.trim();
-      const discount = discountInput.value.trim();
+      const price1 = price1Input.value.trim();
+      const price2 = price2Input.value.trim();
+      const price3 = price3Input.value.trim();
       const description = descriptionInput.value.trim();
+      const buttonName = buttonNameInput.value.trim();
+      const buttonLink = buttonLinkInput.value.trim();
 
-      if (!gameName || !discount || !description) {
+      if (!gameName || !price1 || !price2 || !price3 || !description || !buttonName || !buttonLink) {
         alert('모든 필드를 입력하세요.');
         return;
       }
@@ -43,14 +51,22 @@
       const gamesRef = ref(database, 'games');
       push(gamesRef, {
         name: gameName,
-        discount: discount,
-        description: description
+        price1: price1,
+        price2: price2,
+        price3: price3,
+        description: description,
+        buttonName: buttonName,
+        buttonLink: buttonLink
       });
 
       // 입력 필드 초기화
       gameNameInput.value = '';
-      discountInput.value = '';
+      price1Input.value = '';
+      price2Input.value = '';
+      price3Input.value = '';
       descriptionInput.value = '';
+      buttonNameInput.value = '';
+      buttonLinkInput.value = '';
     };
 
     // 게임 목록 실시간 업데이트
@@ -67,11 +83,15 @@
         li.innerHTML = `
           <div>
             <strong>게임 이름:</strong> ${gameData.name}<br>
-            <strong>할인 가격:</strong> ${gameData.discount}<br>
-            <strong>설명:</strong> ${gameData.description}
+            <strong>가격1:</strong> ${gameData.price1}<br>
+            <strong>가격2:</strong> ${gameData.price2}<br>
+            <strong>가격3:</strong> ${gameData.price3}<br>
+            <strong>설명:</strong> ${gameData.description}<br>
+            <strong>버튼 이름:</strong> ${gameData.buttonName}<br>
+            <strong>버튼 이동할 곳:</strong> ${gameData.buttonLink}<br>
           </div>
           <button onclick="deleteGame('${key}')">삭제</button>
-          <button onclick="editGame('${key}', '${gameData.name}', '${gameData.discount}', '${gameData.description}')">수정</button>
+          <button onclick="editGame('${key}', '${gameData.name}', '${gameData.price1}', '${gameData.price2}', '${gameData.price3}', '${gameData.description}', '${gameData.buttonName}', '${gameData.buttonLink}')">수정</button>
         `;
         gameList.appendChild(li);
       });
@@ -84,16 +104,24 @@
     };
 
     // 게임 수정 함수
-    window.editGame = function (key, name, discount, description) {
+    window.editGame = function (key, name, price1, price2, price3, description, buttonName, buttonLink) {
       const gameNameInput = document.getElementById('gameNameInput');
-      const discountInput = document.getElementById('discountInput');
+      const price1Input = document.getElementById('price1Input');
+      const price2Input = document.getElementById('price2Input');
+      const price3Input = document.getElementById('price3Input');
       const descriptionInput = document.getElementById('descriptionInput');
+      const buttonNameInput = document.getElementById('buttonNameInput');
+      const buttonLinkInput = document.getElementById('buttonLinkInput');
       const saveButton = document.getElementById('saveButton');
 
       // 입력 필드에 기존 값 채우기
       gameNameInput.value = name;
-      discountInput.value = discount;
+      price1Input.value = price1;
+      price2Input.value = price2;
+      price3Input.value = price3;
       descriptionInput.value = description;
+      buttonNameInput.value = buttonName;
+      buttonLinkInput.value = buttonLink;
 
       // 수정 버튼을 저장 버튼으로 변경
       saveButton.style.display = 'inline-block';
@@ -105,14 +133,22 @@
     // 게임 정보 수정 저장 함수
     window.updateGame = function (key) {
       const gameNameInput = document.getElementById('gameNameInput');
-      const discountInput = document.getElementById('discountInput');
+      const price1Input = document.getElementById('price1Input');
+      const price2Input = document.getElementById('price2Input');
+      const price3Input = document.getElementById('price3Input');
       const descriptionInput = document.getElementById('descriptionInput');
+      const buttonNameInput = document.getElementById('buttonNameInput');
+      const buttonLinkInput = document.getElementById('buttonLinkInput');
 
       const gameName = gameNameInput.value.trim();
-      const discount = discountInput.value.trim();
+      const price1 = price1Input.value.trim();
+      const price2 = price2Input.value.trim();
+      const price3 = price3Input.value.trim();
       const description = descriptionInput.value.trim();
+      const buttonName = buttonNameInput.value.trim();
+      const buttonLink = buttonLinkInput.value.trim();
 
-      if (!gameName || !discount || !description) {
+      if (!gameName || !price1 || !price2 || !price3 || !description || !buttonName || !buttonLink) {
         alert('모든 필드를 입력하세요.');
         return;
       }
@@ -121,14 +157,22 @@
       const gameRef = ref(database, 'games/' + key);
       update(gameRef, {
         name: gameName,
-        discount: discount,
-        description: description
+        price1: price1,
+        price2: price2,
+        price3: price3,
+        description: description,
+        buttonName: buttonName,
+        buttonLink: buttonLink
       });
 
       // 입력 필드 초기화
       gameNameInput.value = '';
-      discountInput.value = '';
+      price1Input.value = '';
+      price2Input.value = '';
+      price3Input.value = '';
       descriptionInput.value = '';
+      buttonNameInput.value = '';
+      buttonLinkInput.value = '';
       
       // 저장 버튼 숨기기
       document.getElementById('saveButton').style.display = 'none';
@@ -140,22 +184,4 @@
     input, textarea { padding: 10px; font-size: 16px; margin-right: 10px; margin-bottom: 10px; width: calc(100% - 22px); }
     button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
     ul { list-style: none; padding: 0; margin-top: 20px; }
-    li { padding: 10px; background: #f4f4f4; margin-bottom: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
-    li div { max-width: 80%; }
-    li button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; margin-right: 5px; }
-    #saveButton { display: none; background: green; color: white; }
-  </style>
-</head>
-<body>
-  <h1>게임 할인 정보 관리</h1>
-
-  <input type="text" id="gameNameInput" placeholder="게임 이름 입력">
-  <input type="text" id="discountInput" placeholder="할인 가격 입력">
-  <textarea id="descriptionInput" placeholder="게임 설명 입력" rows="4"></textarea>
-  <button onclick="addGame()">추가</button>
-  <button id="saveButton">저장</button>
-
-  <h2>게임 목록</h2>
-  <ul id="gameList"></ul>
-</body>
-</html>
+    li { padding: 10px; background: #f4f4f4; margin-bottom: 10px;
