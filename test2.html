@@ -54,7 +54,11 @@
             </h2>
             <div id="collapse${index}" class="accordion-collapse collapse ${index === 1 ? 'show' : ''}" data-bs-parent="#accordionExample">
               <div class="accordion-body">
-                <strong>${game.gameName}</strong> ${game.description}
+                <strong><span class="fs-1 text-dak fw-bolder essential">>${game.price1}</span>
+							<span class="fs-3 text-body-secondary">>${game.price2}</span</strong> ${game.description} <div class="mt-auto">
+								<a href="${game.buttonLink}" class="btn btn-primary text-white mt-4 w-100">
+${game.buttonName}</a>
+							</div>
               </div>
             </div>
           </div>
