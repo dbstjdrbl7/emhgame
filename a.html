@@ -257,64 +257,58 @@ data-ad-width = "728"
 data-ad-height = "90"></ins>
 <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
 		</div>
-				
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-							X-BOX PC GAME PASS 세일                        </button>
-                      </h2>
-                      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                          <strong><span class="fs-1 text-dak fw-bolder essential">1,500</span>
-							<span class="fs-3 text-body-secondary">원 / 월(최대 2개월)</span></strong> X-BOX PC GAME PASS을 2개월 동안 월 1,500원으로 할인 중 입니다. | 2월 6일까지 | 원래 월 구독료 9,500원 | 1달 1,500원 2개월까지
-							<div class="mt-auto">
-								<a href="https://www.xbox.com/ko-KR/xbox-game-pass/pc-game-pass?msockid=0619fc3056e7609d2526e90d576b615a" class="btn btn-primary text-white mt-4 w-100">
-	더 알아보기							</a>
+			<script>
+  // Firebase configuration
+  var firebaseConfig = {
+          apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
+      authDomain: "emhgame-bbd5c.firebaseapp.com",
+      databaseURL: "https://emhgame-bbd5c-default-rtdb.firebaseio.com",
+      projectId: "emhgame-bbd5c",
+      storageBucket: "emhgame-bbd5c.appspot.com",
+      messagingSenderId: "640920535415",
+      appId: "1:640920535415:web:dfac8b967f803d0e4fe172"
+
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+  
+   // Reference to the database where the data is stored
+  var gamesRef = database.ref('games');
+
+  // Fetch data from Firebase
+  gamesRef.once('value', function(snapshot) {
+    var gamesData = snapshot.val();
+    if (gamesData) {
+      let accordionHtml = '';
+      let index = 1;
+      Object.values(gamesData).forEach(function(game) {
+        accordionHtml += `
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="heading${index}">
+              <button class="accordion-button ${index === 1 ? '' : 'collapsed'}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="${index === 1 ? 'true' : 'false'}" aria-controls="collapse${index}">
+                ${game.name}
+              </button>
+            </h2>
+            <div id="collapse${index}" class="accordion-collapse collapse ${index === 1 ? 'show' : ''}" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <strong><span class="fs-1 text-dak fw-bolder essential">${game.price1}</span>
+							<span class="fs-3 text-body-secondary">${game.price2}</span></strong> ${game.description} <div class="mt-auto">
+								<a href="${game.buttonLink}" class="btn btn-primary text-white mt-4 w-100">
+${game.buttonName}</a>
 							</div>
-						</div>
-                      </div>
-                    </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-							Minecraft(Mobile)
-                        </button>
-                      </h2>
-                      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                          <strong><span class="fs-1 text-dak fw-bolder premium">2,895</span>
-							<span class="fs-3 text-body-secondary">원</span></strong> 마인크래프트 안드로이드 모바일 버전이 현재 할인 중 입니다. | 현재 안드로이드와 애플 모두 대략 2,900원으로 배드락 버전을 구매할 수 있습니다.
-							<div class="mt-auto">
-								<button class="btn btn-primary text-white mt-4 w-100">
-									각 모바일 스토어에서 확인하세요
-								</button>
-							</div>
-						</div>
-                      </div>
-                    </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-							PS 1월 세일                        </button>
-                      </h2>
-                      <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                          <strong><span class="fs-1 text-body-secondary fw-bold">최대</span>
-							<span class="fs-1 text-dak fw-bolder advanced">70</span>
-							<span class="fs-3 text-body-secondary">%</span>
-						</div></strong> 호평 받은 게임과 초대형 인기 타이틀을 할인 
-						<div class="mt-auto">
-							<a href="https://store.playstation.com/ko-kr/category/9acd1e0b-f014-4fb6-93a1-4cf2a0b4ae97" class="btn btn-primary text-white mt-4 w-100">
-더 알아보기	</a>
-						</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-			</div>
-            
-		</div>
+              </div>
+            </div>
+          </div>
+        `;
+        index++;
+      });
+      document.getElementById('accordionExample').innerHTML = accordionHtml;
+    }
+  });
+</script>	
+              
 		<div class="ad-container">
 		<ins class="kakao_ad_area" style="display:none;"
 data-ad-unit = "DAN-p2hnM0ZlxGjVK7E7"
