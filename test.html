@@ -177,35 +177,7 @@
       // 저장 버튼 숨기기
       document.getElementById('saveButton').style.display = 'none';
     };
-  // Reference to the database where the data is stored
-  const gamesRef = database.ref('games');
 
-  // Fetch data from Firebase
-  gamesRef.once('value', (snapshot) => {
-    const gamesData = snapshot.val();
-    if (gamesData) {
-      let accordionHtml = '';
-      let index = 1;
-      Object.values(gamesData).forEach((game) => {
-        accordionHtml += `
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="heading${index}">
-              <button class="accordion-button ${index === 1 ? '' : 'collapsed'}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="${index === 1 ? 'true' : 'false'}" aria-controls="collapse${index}">
-                ${game.gameName}
-              </button>
-            </h2>
-            <div id="collapse${index}" class="accordion-collapse collapse ${index === 1 ? 'show' : ''}" data-bs-parent="#accordionExample">
-              <div class="accordion-body">
-                <strong>${game.gameName}</strong> ${game.description}
-              </div>
-            </div>
-          </div>
-        `;
-        index++;
-      });
-      document.getElementById('accordionExample').innerHTML = accordionHtml;
-    }
-  });
 </script>
 
 <!-- Add Bootstrap JS -->
