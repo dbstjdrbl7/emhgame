@@ -7,7 +7,7 @@
   <script type="module">
     // Firebase SDK 모듈 가져오기
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+    import { getDatabase, ref, push, onValue, set,remove, update } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
 
     // Firebase 설정
@@ -66,8 +66,8 @@
           alert('로그아웃 실패: ' + error.message);
         });
     };
-  // 어드민 추가 함수
-  window.addAdmin = function () {
+     // 어드민 추가 함수
+     window.addAdmin = function () {
       const adminIdInput = document.getElementById('adminIdInput');
       const adminPasswordInput = document.getElementById('adminPasswordInput');
 
@@ -79,16 +79,20 @@
         return;
       }
 
-      // 어드민 데이터 저장
+      // 어드민 데이터를 Firebase Realtime Database에 저장
       const adminsRef = ref(database, 'admins/' + adminId);
       set(adminsRef, {
         password: adminPassword
+      }).then(() => {
+        alert('어드민이 성공적으로 추가되었습니다.');
+        adminIdInput.value = '';
+        adminPasswordInput.value = '';
+      }).catch((error) => {
+        console.error('어드민 추가 중 오류 발생:', error);
+        alert('어드민 추가에 실패했습니다.');
       });
-
-      alert('어드민이 성공적으로 추가되었습니다.');
-      adminIdInput.value = '';
-      adminPasswordInput.value = '';
     };
+
     // 게임 정보 추가 함수
     window.addGame = function () {
       const gameNameInput = document.getElementById('gameNameInput');
