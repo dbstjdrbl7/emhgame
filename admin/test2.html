@@ -36,54 +36,57 @@
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
 
-    // 📌 이미지 업로드 함수
     window.uploadImage = async function () {
-      const fileInput = document.getElementById('fileInput');
-      const file = fileInput.files[0];
+  const fileInput = document.getElementById('fileInput');
+  const file = fileInput.files[0];
 
-      if (!file) {
-        alert("파일을 선택하세요!");
-        return;
-      }
+  if (!file) {
+    alert("파일을 선택하세요!");
+    return;
+  }
 
-      // 이미지 업로드를 위한 FormData 객체 생성
-      const formData = new FormData();
-      formData.append("image", file);
+  // 이미지 업로드를 위한 FormData 객체 생성
+  const formData = new FormData();
+  formData.append("image", file);
 
-      try {
-        // imgur API에 이미지 업로드 (API 키 필요 없음)
-        const response = await fetch('https://api.imgur.com/3/upload', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Client-ID your-client-id-here'  // Imgur 클라이언트 ID 넣기
-          },
-          body: formData
-        });
+  try {
+    // 요청을 보내기 전에 잠시 대기 (1초 대기)
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-        const data = await response.json();
-        if (data.success) {
-          const imageUrl = data.data.link; // 이미지 URL 가져오기
-          console.log("✅ 다운로드 URL:", imageUrl);
+    // imgur API에 이미지 업로드 (API 키 필요 없음)
+    const response = await fetch('https://api.imgur.com/3/upload', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Client-ID your-client-id-here'  // Imgur 클라이언트 ID 넣기
+      },
+      body: formData
+    });
 
-          // Realtime Database에 저장
-          const newImageRef = push(dbRef(database, 'community/posts'));
-          await set(newImageRef, {
-            imageUrl: imageUrl,
-            timestamp: Date.now()
-          });
+    const data = await response.json();
+    if (data.success) {
+      const imageUrl = data.data.link; // 이미지 URL 가져오기
+      console.log("✅ 다운로드 URL:", imageUrl);
 
-          // 업로드된 이미지 표시
-          document.getElementById('uploadedImage').src = imageUrl;
-          alert("이미지 업로드 및 저장 성공!");
-        } else {
-          console.error("❌ 업로드 실패:", data);
-          alert("이미지 업로드 실패!");
-        }
-      } catch (error) {
-        console.error("❌ 업로드 실패:", error);
-        alert("업로드 중 오류가 발생했습니다.");
-      }
-    };
+      // Realtime Database에 저장
+      const newImageRef = push(dbRef(database, 'community/posts'));
+      await set(newImageRef, {
+        imageUrl: imageUrl,
+        timestamp: Date.now()
+      });
+
+      // 업로드된 이미지 표시
+      document.getElementById('uploadedImage').src = imageUrl;
+      alert("이미지 업로드 및 저장 성공!");
+    } else {
+      console.error("❌ 업로드 실패:", data);
+      alert("이미지 업로드 실패!");
+    }
+  } catch (error) {
+    console.error("❌ 업로드 실패:", error);
+    alert("업로드 중 오류가 발생했습니다.");
+  }
+};
+
   </script>
 </body>
 </html>
