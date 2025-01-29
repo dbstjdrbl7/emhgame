@@ -9,8 +9,8 @@
     <url>
         <loc>https://emhgame.kro.kr/a</loc> 
         <lastmod>2025-01-29</lastmod>
-        <changefreq>always</changefreq>
-        <priority>0.8</priority>
+        <changefreq>hourly</changefreq>
+        <priority>0.1</priority>
     </url>
  
 </urlset> 
