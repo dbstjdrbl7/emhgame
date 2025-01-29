@@ -41,20 +41,22 @@
         mainSection.style.display = 'none';
       }
     });
-
-    // 로그인 함수
-    window.login = function () {
-      const email = document.getElementById('emailInput').value.trim();
-      const password = document.getElementById('passwordInput').value.trim();
-
-      signInWithEmailAndPassword(auth, admins, admins.password)
-        .then(() => {
-          alert('로그인 성공!');
-        })
-        .catch((error) => {
-          alert('로그인 실패: ' + error.message);
-        });
-    };
+    
+    const adminRef = ref(database, 'admins/' + loginId);
+  onValue(adminRef, (snapshot) => {
+    if (snapshot.exists() && snapshot.val().password === loginPassword) {
+      // 로그인 성공 시 로컬 스토리지에 저장
+      localStorage.setItem('isAdmin', 'true');
+      localStorage.setItem('adminId', loginId);
+      alert('로그인 성공!');
+      window.location.href = 'admin-page.html'; // 어드민 페이지로 이동
+    } else {
+      alert('로그인 실패! 아이디 또는 비밀번호를 확인하세요.');
+    }
+  }, {
+    onlyOnce: true // 실시간 데이터 변경 수신 방지
+  });
+};
 
     // 로그아웃 함수
     window.logout = function () {
