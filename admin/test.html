@@ -7,8 +7,7 @@
   <script type="module">
     // Firebase SDK 모듈 가져오기
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-    import { getDatabase, ref, push, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+    import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
 
     // Firebase 설정
     const firebaseConfig = {
@@ -24,91 +23,6 @@
     // Firebase 앱 초기화
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
-    const auth = getAuth(app);
-
-    // 페이지 접근 제한
-    onAuthStateChanged(auth, (user) => {
-      const loginSection = document.getElementById('loginSection');
-      const mainSection = document.getElementById('mainSection');
-
-      if (user) {
-        // 로그인 상태일 경우
-        loginSection.style.display = 'none';
-        mainSection.style.display = 'block';
-      } else {
-        // 로그인하지 않은 경우
-        loginSection.style.display = 'block';
-        mainSection.style.display = 'none';
-      }
-    });
-
-    window.loginAdmin = function () {
-      const loginIdInput = document.getElementById('loginIdInput');
-      const loginPasswordInput = document.getElementById('loginPasswordInput');
-
-      const loginId = loginIdInput.value.trim();
-      const loginPassword = loginPasswordInput.value.trim();
-
-      if (!loginId || !loginPassword) {
-        alert('모든 필드를 입력하세요.');
-        return;
-      }
-
-      // Firebase Realtime Database에서 어드민 확인
-      const adminRef = ref(database, 'admins/' + loginId);
-      onValue(adminRef, (snapshot) => {
-        if (snapshot.exists() && snapshot.val().password === loginPassword) {
-          // 로그인 성공
-          localStorage.setItem('isAdmin', 'true');
-          localStorage.setItem('adminId', loginId);
-          alert('로그인 성공!');
-          loginSection.style.display = 'none';
-          mainSection.style.display = 'block';
-        } else {
-          alert('로그인 실패! 아이디 또는 비밀번호를 확인하세요.');
-        }
-      }, {
-        onlyOnce: true // 실시간 데이터 변경 수신 방지
-      });
-    };
-
-    // 로그아웃 함수
-    window.logout = function () {
-      signOut(auth)
-        .then(() => {
-          alert('로그아웃 성공!');
-        })
-        .catch((error) => {
-          alert('로그아웃 실패: ' + error.message);
-        });
-    };
-
-    // 어드민 추가 함수
-    window.addAdmin = function () {
-      const adminIdInput = document.getElementById('adminIdInput');
-      const adminPasswordInput = document.getElementById('adminPasswordInput');
-
-      const adminId = adminIdInput.value.trim();
-      const adminPassword = adminPasswordInput.value.trim();
-
-      if (!adminId || !adminPassword) {
-        alert('모든 필드를 입력하세요.');
-        return;
-      }
-
-      // 어드민 데이터를 Firebase Realtime Database에 저장
-      const adminsRef = ref(database, 'admins/' + adminId);
-      set(adminsRef, {
-        password: adminPassword
-      }).then(() => {
-        alert('어드민이 성공적으로 추가되었습니다.');
-        adminIdInput.value = '';
-        adminPasswordInput.value = '';
-      }).catch((error) => {
-        console.error('어드민 추가 중 오류 발생:', error);
-        alert('어드민 추가에 실패했습니다.');
-      });
-    };
 
     // 게임 정보 추가 함수
     window.addGame = function () {
@@ -128,7 +42,7 @@
       const buttonName = buttonNameInput.value.trim();
       const buttonLink = buttonLinkInput.value.trim();
 
-      if (!gameName || !price1 || !description || !buttonName || !buttonLink) {
+      if (!gameName || !price1  || !description || !buttonName || !buttonLink) {
         alert('모든 필드를 입력하세요.');
         return;
       }
@@ -161,27 +75,26 @@
       const gameList = document.getElementById('gameList');
       gameList.innerHTML = ''; // 기존 목록 초기화
       snapshot.forEach((childSnapshot) => {
-   const key = childSnapshot.key;
-   const gameData = childSnapshot.val();
+        const key = childSnapshot.key; // Firebase에서 데이터의 고유 키
+        const gameData = childSnapshot.val(); // 게임 정보 (객체)
 
-   // This part might be failing due to the li not being defined
-   const li = document.createElement('li'); // Make sure 'li' is defined first
-   li.innerHTML = `
-     <div>
-       <strong>게임 이름:</strong> ${gameData.name}<br>
-       <strong>가격1:</strong> ${gameData.price1}<br>
-       <strong>가격2:</strong> ${gameData.price2}<br>
-       <strong>가격3:</strong> ${gameData.price3}<br>
-       <strong>설명:</strong> ${gameData.description}<br>
-       <strong>버튼 이름:</strong> ${gameData.buttonName}<br>
-       <strong>버튼 이동할 곳:</strong> ${gameData.buttonLink}<br>
-     </div>
-     <button onclick="deleteGame('${key}')">삭제</button>
-     <button onclick="editGame('${key}', '${gameData.name}', '${gameData.price1}', '${gameData.price2}', '${gameData.price3}', '${gameData.description}', '${gameData.buttonName}', '${gameData.buttonLink}')">수정</button>
-   `;
-   gameList.appendChild(li);
-});
-
+        // 목록에 추가
+        const li = document.createElement('li');
+        li.innerHTML = 
+          <div>
+            <strong>게임 이름:</strong> ${gameData.name}<br>
+            <strong>가격1:</strong> ${gameData.price1}<br>
+            <strong>가격2:</strong> ${gameData.price2}<br>
+            <strong>가격3:</strong> ${gameData.price3}<br>
+            <strong>설명:</strong> ${gameData.description}<br>
+            <strong>버튼 이름:</strong> ${gameData.buttonName}<br>
+            <strong>버튼 이동할 곳:</strong> ${gameData.buttonLink}<br>
+          </div>
+          <button onclick="deleteGame('${key}')">삭제</button>
+          <button onclick="editGame('${key}', '${gameData.name}', '${gameData.price1}', '${gameData.price2}', '${gameData.price3}', '${gameData.description}', '${gameData.buttonName}', '${gameData.buttonLink}')">수정</button>
+        ;
+        gameList.appendChild(li);
+      });
     });
 
     // 게임 삭제 함수
@@ -213,11 +126,11 @@
       // 수정 버튼을 저장 버튼으로 변경
       saveButton.style.display = 'inline-block';
       saveButton.onclick = function () {
-        updateGame(key); // 게임 정보 업데이트
+        updateGame(key); // 수정 저장
       };
     };
 
-    // 게임 정보 업데이트 함수
+    // 게임 정보 수정 저장 함수
     window.updateGame = function (key) {
       const gameNameInput = document.getElementById('gameNameInput');
       const price1Input = document.getElementById('price1Input');
@@ -240,6 +153,7 @@
         return;
       }
 
+      // Realtime Database에서 게임 정보 업데이트
       const gameRef = ref(database, 'games/' + key);
       update(gameRef, {
         name: gameName,
@@ -251,7 +165,7 @@
         buttonLink: buttonLink
       });
 
-      // 입력 필드 초기화 및 저장 버튼 숨기기
+      // 입력 필드 초기화
       gameNameInput.value = '';
       price1Input.value = '';
       price2Input.value = '';
@@ -259,41 +173,43 @@
       descriptionInput.value = '';
       buttonNameInput.value = '';
       buttonLinkInput.value = '';
-      saveButton.style.display = 'none';
+      
+      // 저장 버튼 숨기기
+      document.getElementById('saveButton').style.display = 'none';
     };
-  </script>
+
+</script>
+
+<!-- Add Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    input, textarea { padding: 10px; font-size: 16px; margin-right: 10px; margin-bottom: 10px; width: calc(100% - 22px); }
+    button { padding: 10px 15px; font-size: 16px; cursor: pointer; }
+    ul { list-style: none; padding: 0; margin-top: 20px; }
+    li { padding: 10px; background: #f4f4f4; margin-bottom: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+    li div { max-width: 80%; }
+    li button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; margin-right: 5px; }
+    #saveButton { display: none; background: green; color: white; }
+  </style>
 </head>
 <body>
-  <div id="loginSection">
-    <h2>관리자 로그인</h2>
-    <input type="text" id="loginIdInput" placeholder="아이디" required><br>
-    <input type="password" id="loginPasswordInput" placeholder="비밀번호" required><br>
-    <button onclick="loginAdmin()">로그인</button>
-  </div>
-
-  <section id="mainSection">
   <h1>게임 할인 정보 관리</h1>
-  <button onclick="logout()">로그아웃</button>
-  <div>
-    <input type="text" id="gameNameInput" placeholder="게임 이름 입력">
-    <input type="text" id="price1Input" placeholder="가격1 입력">
-    <input type="text" id="price2Input" placeholder="가격2 입력">
-    <input type="text" id="price3Input" placeholder="가격3 입력">
-    <textarea id="descriptionInput" placeholder="게임 설명 입력" rows="4"></textarea>
-    <input type="text" id="buttonNameInput" placeholder="버튼 이름 입력">
-    <input type="text" id="buttonLinkInput" placeholder="버튼 이동할 곳 입력">
-    <button onclick="addGame()">추가</button>
-    
-    <!-- 수정된 게임 정보 저장 버튼 추가 -->
-    <button id="saveButton" style="display:none;" onclick="updateGame()">저장</button>
-  </div>
+
+  <input type="text" id="gameNameInput" placeholder="게임 이름 입력">
+  <input type="text" id="price1Input" placeholder="가격1 입력">
+  <input type="text" id="price2Input" placeholder="가격2 입력">
+  <input type="text" id="price3Input" placeholder="가격3 입력">
+  <textarea id="descriptionInput" placeholder="게임 설명 입력" rows="4"></textarea>
+  <input type="text" id="buttonNameInput" placeholder="버튼 이름 입력">
+  <input type="text" id="buttonLinkInput" placeholder="버튼 이동할 곳 입력">
+  <button onclick="addGame()">추가</button>
+  <button id="saveButton">저장</button>
+
   <h2>게임 목록</h2>
   <ul id="gameList"></ul>
-
-  <h2>어드민 추가</h2>
-  <input type="text" id="adminIdInput" placeholder="어드민 아이디 입력">
-  <input type="password" id="adminPasswordInput" placeholder="어드민 비밀번호 입력">
-  <button onclick="addAdmin()">어드민 추가</button>
-</section>
 </body>
 </html>
+
