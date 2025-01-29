@@ -1,77 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accordion Example with Firebase</title>
-  <!-- Add Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+  <title>게임 할인 정보 관리</title>
+  <script type="module">
+    // Firebase SDK 모듈 가져오기
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
 
-<div class="accordion" id="accordionExample">
-  <!-- Accordion items will be dynamically added here -->
-</div>
-
-<!-- Add Firebase CDN -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-<!-- Your Firebase Script -->
-<script>
-  // Firebase configuration
-  var firebaseConfig = {
-          apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
+    // Firebase 설정
+    const firebaseConfig = {
+      apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
       authDomain: "emhgame-bbd5c.firebaseapp.com",
       databaseURL: "https://emhgame-bbd5c-default-rtdb.firebaseio.com",
       projectId: "emhgame-bbd5c",
       storageBucket: "emhgame-bbd5c.appspot.com",
       messagingSenderId: "640920535415",
       appId: "1:640920535415:web:dfac8b967f803d0e4fe172"
+    };
 
-  };
+    // Firebase 앱 초기화
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  var database = firebase.database();
-  
-   // Reference to the database where the data is stored
-  var gamesRef = database.ref('games');
+    // 페이지 접근 제한
+    onAuthStateChanged(auth, (user) => {
+      const loginSection = document.getElementById('loginSection');
+      const mainSection = document.getElementById('mainSection');
 
-  // Fetch data from Firebase
-  gamesRef.once('value', function(snapshot) {
-    var gamesData = snapshot.val();
-    if (gamesData) {
-      let accordionHtml = '';
-      let index = 1;
-      Object.values(gamesData).forEach(function(game) {
-        accordionHtml += `
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="heading${index}">
-              <button class="accordion-button ${index === 1 ? '' : 'collapsed'}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="${index === 1 ? 'true' : 'false'}" aria-controls="collapse${index}">
-                ${game.name}
-              </button>
-            </h2>
-            <div id="collapse${index}" class="accordion-collapse collapse ${index === 1 ? 'show' : ''}" data-bs-parent="#accordionExample">
-              <div class="accordion-body">
-                <strong><span class="fs-1 text-dak fw-bolder essential">${game.price1}</span>
-							<span class="fs-3 text-body-secondary">${game.price2}</span></strong> ${game.description} <div class="mt-auto">
-								<a href="${game.buttonLink}" class="btn btn-primary text-white mt-4 w-100">
-${game.buttonName}</a>
-							</div>
-              </div>
-            </div>
-          </div>
-        `;
-        index++;
+      if (user) {
+        // 로그인 상태일 경우
+        loginSection.style.display = 'none';
+        mainSection.style.display = 'block';
+      } else {
+        // 로그인하지 않은 경우
+        loginSection.style.display = 'block';
+        mainSection.style.display = 'none';
+      }
+    });
+
+    // 로그인 함수
+    window.login = function () {
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert('로그인 성공!');
+        })
+        .catch((error) => {
+          alert('로그인 실패: ' + error.message);
+        });
+    };
+
+    // 로그아웃 함수
+    window.logout = function () {
+      signOut(auth)
+        .then(() => {
+          alert('로그아웃 성공!');
+        })
+        .catch((error) => {
+          alert('로그아웃 실패: ' + error.message);
+        });
+    };
+
+    // 게임 정보 추가 함수
+    window.addGame = function () {
+      const gameNameInput = document.getElementById('gameNameInput');
+      const price1Input = document.getElementById('price1Input');
+      const price2Input = document.getElementById('price2Input');
+      const price3Input = document.getElementById('price3Input');
+      const descriptionInput = document.getElementById('descriptionInput');
+      const buttonNameInput = document.getElementById('buttonNameInput');
+      const buttonLinkInput = document.getElementById('buttonLinkInput');
+
+      const gameName = gameNameInput.value.trim();
+      const price1 = price1Input.value.trim();
+      const price2 = price2Input.value.trim();
+      const price3 = price3Input.value.trim();
+      const description = descriptionInput.value.trim();
+      const buttonName = buttonNameInput.value.trim();
+      const buttonLink = buttonLinkInput.value.trim();
+
+      if (!gameName || !price1 || !description || !buttonName || !buttonLink) {
+        alert('모든 필드를 입력하세요.');
+        return;
+      }
+
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+
+      // Realtime Database에 게임 정보 추가
+      const gamesRef = ref(database, 'games');
+      push(gamesRef, {
+        name: gameName,
+        price1: price1,
+        price2: price2,
+        price3: price3,
+        description: description,
+        buttonName: buttonName,
+        buttonLink: buttonLink,
+        addedBy: currentUser.email // 현재 로그인한 사용자의 이메일 저장
       });
-      document.getElementById('accordionExample').innerHTML = accordionHtml;
-    }
-  });
-</script>
 
-<!-- Add Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+      // 입력 필드 초기화
+      gameNameInput.value = '';
+      price1Input.value = '';
+      price2Input.value = '';
+      price3Input.value = '';
+      descriptionInput.value = '';
+      buttonNameInput.value = '';
+      buttonLinkInput.value = '';
+    };
 
+    // 게임 목록 실시간 업데이트
+    const gamesRef = ref(database, 'games');
+    onValue(gamesRef, (snapshot) => {
+      const gameList = document.getElementById('gameList');
+      gameList.innerHTML = ''; // 기존 목록 초기화
+      snapshot.forEach((childSnapshot) => {
+        const key = childSnapshot.key; // Firebase에서 데이터의 고유 키
+        const gameData = childSnapshot.val(); // 게임 정보 (객체)
+
+        // 목록에 추가
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div>
+            <strong>게임 이름:</strong> ${gameData.name}<br>
+            <strong>가격1:</strong> ${gameData.price1}<br>
+            <strong>가격2:</strong> ${gameData.price2}<br>
+            <strong>가격3:</strong> ${gameData.price3}<br>
+            <strong>설명:</strong> ${gameData.description}<br>
+            <strong>버튼 이름:</strong> ${gameData.buttonName}<br>
+            <strong>버튼 이동할 곳:</strong> ${gameData.buttonLink}<br>
+            <strong>추가한 사람:</strong> ${gameData.addedBy || 'Unknown'}<br>
+          </div>
+          <button onclick="deleteGame('${key}')">삭제</button>
+        `;
+        gameList.appendChild(li);
+      });
+    });
+
+    // 게임 삭제 함수
+    window.deleteGame = function (key) {
+      const gameRef = ref(database, 'games/' + key);
+      remove(gameRef); // 해당 키의 데이터 삭제
+    };
+
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #mainSection { display: none; }
+    input, textarea { padding: 10px; font-size: 16px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <!-- 로그인 섹션 -->
+  <section id="loginSection">
+    <h1>관리자 로그인</h1>
+    <input type="email" id="emailInput" placeholder="이메일 입력">
+    <input type="password" id="passwordInput" placeholder="비밀번호 입력">
+    <button onclick="login()">로그인</button>
+  </section>
+
+  <!-- 메인 섹션 -->
+  <section id="mainSection">
+    <h1>게임 할인 정보 관리</h1>
+    <button onclick="logout()">로그아웃</button>
+
+    <input type="text" id="gameNameInput" placeholder="게임 이름 입력">
+    <input type="text" id="price1Input" placeholder="가격1 입력">
+    <input type="text" id="price2Input" placeholder="가격2 입력">
+    <input type="text" id="price3Input" placeholder="가격3 입력">
+    <textarea id="descriptionInput" placeholder="게임 설명 입력" rows="4"></textarea>
+    <input type="text" id="buttonNameInput" placeholder="버튼 이름 입력">
+    <input type="text" id="buttonLinkInput" placeholder="버튼 이동할 곳 입력">
+    <button onclick="addGame()">추가</button>
+
+    <h2>게임 목록</h2>
+    <ul id="gameList"></ul>
+  </section>
 </body>
 </html>
