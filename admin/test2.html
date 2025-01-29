@@ -141,7 +141,7 @@
         description: description,
         buttonName: buttonName,
         buttonLink: buttonLink,
-        addedBy: currentUser.email // 현재 로그인한 사용자의 이메일 저장
+        addedBy: loginIdInput // 현재 로그인한 사용자의 이메일 저장
       });
 
       // 입력 필드 초기화
@@ -200,7 +200,7 @@
 
 
   <section id="loginSection">
-    <h1>관리자 로그인</h1>1.1.7v<div></div>
+    <h1>관리자 로그인</h1>1.1.8v<div></div>
 <input type="text" id="loginIdInput" placeholder="아이디 입력">
 <input type="password" id="loginPasswordInput" placeholder="비밀번호 입력">
 <button onclick="loginAdmin()">로그인</button>
