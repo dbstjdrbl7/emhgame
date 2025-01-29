@@ -184,17 +184,31 @@
 </head>
 <body>
   <!-- 로그인 섹션 -->
+
+
   <section id="loginSection">
     <h1>관리자 로그인</h1>
     <input type="email" id="emailInput" placeholder="이메일 입력">
     <input type="password" id="passwordInput" placeholder="비밀번호 입력">
     <button onclick="login()">로그인</button>
+
+    <h2>어드민 추가</h2>
+    <input type="text" id="adminIdInput" placeholder="어드민 아이디 입력">
+    <input type="password" id="adminPasswordInput" placeholder="어드민 비밀번호 입력">
+    <button onclick="addAdmin()">어드민 추가</button>
+
   </section>
 
   <!-- 메인 섹션 -->
   <section id="mainSection">
     <h1>게임 할인 정보 관리</h1>
     <button onclick="logout()">로그아웃</button>
+  
+    <h2>어드민 추가</h2>
+    <input type="text" id="adminIdInput" placeholder="어드민 아이디 입력">
+    <input type="password" id="adminPasswordInput" placeholder="어드민 비밀번호 입력">
+    <button onclick="addAdmin()">어드민 추가</button>
+
 
     <input type="text" id="gameNameInput" placeholder="게임 이름 입력">
     <input type="text" id="price1Input" placeholder="가격1 입력">
@@ -205,11 +219,7 @@
     <input type="text" id="buttonLinkInput" placeholder="버튼 이동할 곳 입력">
     <button onclick="addGame()">추가</button>
 
-    <h2>어드민 추가</h2>
-    <input type="text" id="adminIdInput" placeholder="어드민 아이디 입력">
-    <input type="password" id="adminPasswordInput" placeholder="어드민 비밀번호 입력">
-    <button onclick="addAdmin()">어드민 추가</button>
-
+   
     <h2>게임 목록</h2>
     <ul id="gameList"></ul>
   </section>
