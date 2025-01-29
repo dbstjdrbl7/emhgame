@@ -19,7 +19,6 @@
   <script type="module">
     // 🔥 Firebase SDK 추가
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-storage.js";
     import { getDatabase, ref as dbRef, push, set } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
 
     // 🔥 Firebase 설정
@@ -35,7 +34,6 @@
 
     // Firebase 초기화
     const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
     const database = getDatabase(app);
 
     // 📌 이미지 업로드 함수
@@ -48,30 +46,42 @@
         return;
       }
 
-      // Firebase Storage 참조 만들기
-      const fileRef = storageRef(storage, `community_images/${file.name}`);
+      // 이미지 업로드를 위한 FormData 객체 생성
+      const formData = new FormData();
+      formData.append("image", file);
 
       try {
-        // Storage에 파일 업로드
-        await uploadBytes(fileRef, file);
-        console.log("✅ 파일 업로드 성공!");
-
-        // 업로드한 이미지의 URL 가져오기
-        const imageUrl = await getDownloadURL(fileRef);
-        console.log("✅ 다운로드 URL:", imageUrl);
-
-        // Realtime Database에 저장
-        const newImageRef = push(dbRef(database, 'community/posts'));
-        await set(newImageRef, {
-          imageUrl: imageUrl,
-          timestamp: Date.now()
+        // imgur API에 이미지 업로드 (API 키 필요 없음)
+        const response = await fetch('https://api.imgur.com/3/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Client-ID your-client-id-here'  // Imgur 클라이언트 ID 넣기
+          },
+          body: formData
         });
 
-        // 업로드된 이미지 표시
-        document.getElementById('uploadedImage').src = imageUrl;
-        alert("이미지 업로드 및 저장 성공!");
+        const data = await response.json();
+        if (data.success) {
+          const imageUrl = data.data.link; // 이미지 URL 가져오기
+          console.log("✅ 다운로드 URL:", imageUrl);
+
+          // Realtime Database에 저장
+          const newImageRef = push(dbRef(database, 'community/posts'));
+          await set(newImageRef, {
+            imageUrl: imageUrl,
+            timestamp: Date.now()
+          });
+
+          // 업로드된 이미지 표시
+          document.getElementById('uploadedImage').src = imageUrl;
+          alert("이미지 업로드 및 저장 성공!");
+        } else {
+          console.error("❌ 업로드 실패:", data);
+          alert("이미지 업로드 실패!");
+        }
       } catch (error) {
         console.error("❌ 업로드 실패:", error);
+        alert("업로드 중 오류가 발생했습니다.");
       }
     };
   </script>
