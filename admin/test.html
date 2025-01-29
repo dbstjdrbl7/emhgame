@@ -190,7 +190,8 @@
     };
 
     // 게임 수정 함수
-    window.editGame = function (key, name, price1, price2, price3, description, buttonName, buttonLink) {
+    window.editGame('${key}', '${gameData.name}', '${gameData.price1}', '${gameData.price2}', '${gameData.price3}', '${gameData.description}', '${gameData.buttonName}', '${gameData.buttonLink}')
+ {
       const gameNameInput = document.getElementById('gameNameInput');
       const price1Input = document.getElementById('price1Input');
       const price2Input = document.getElementById('price2Input');
