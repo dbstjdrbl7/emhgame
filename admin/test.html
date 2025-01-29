@@ -270,30 +270,29 @@
     <button onclick="loginAdmin()">로그인</button>
   </div>
 
-  <div id="mainSection" style="display:none;">
-    <h2>게임 할인 정보 관리</h2>
-
-    <h3>게임 추가</h3>
-    <input type="text" id="gameNameInput" placeholder="게임 이름"><br>
-    <input type="text" id="price1Input" placeholder="가격1"><br>
-    <input type="text" id="price2Input" placeholder="가격2"><br>
-    <input type="text" id="price3Input" placeholder="가격3"><br>
-    <input type="text" id="descriptionInput" placeholder="게임 설명"><br>
-    <input type="text" id="buttonNameInput" placeholder="버튼 이름"><br>
-    <input type="text" id="buttonLinkInput" placeholder="버튼 링크"><br>
-    <button onclick="addGame()">게임 추가</button>
-<!-- 게임 정보 수정 버튼 -->
-<button id="saveButton" style="display:none;" onclick="updateGame()">저장</button>
-
-    <h3>게임 목록</h3>
-    <ul id="gameList"></ul>
-
-    <h3>어드민 추가</h3>
-    <input type="text" id="adminIdInput" placeholder="아이디"><br>
-    <input type="password" id="adminPasswordInput" placeholder="비밀번호"><br>
-    <button onclick="addAdmin()">어드민 추가</button><br>
-
-    <button onclick="logout()">로그아웃</button>
+  section id="mainSection">
+  <h1>게임 할인 정보 관리</h1>
+  <button onclick="logout()">로그아웃</button>
+  <div>
+    <input type="text" id="gameNameInput" placeholder="게임 이름 입력">
+    <input type="text" id="price1Input" placeholder="가격1 입력">
+    <input type="text" id="price2Input" placeholder="가격2 입력">
+    <input type="text" id="price3Input" placeholder="가격3 입력">
+    <textarea id="descriptionInput" placeholder="게임 설명 입력" rows="4"></textarea>
+    <input type="text" id="buttonNameInput" placeholder="버튼 이름 입력">
+    <input type="text" id="buttonLinkInput" placeholder="버튼 이동할 곳 입력">
+    <button onclick="addGame()">추가</button>
+    
+    <!-- 수정된 게임 정보 저장 버튼 추가 -->
+    <button id="saveButton" style="display:none;" onclick="updateGame()">저장</button>
   </div>
+  <h2>게임 목록</h2>
+  <ul id="gameList"></ul>
+
+  <h2>어드민 추가</h2>
+  <input type="text" id="adminIdInput" placeholder="어드민 아이디 입력">
+  <input type="password" id="adminPasswordInput" placeholder="어드민 비밀번호 입력">
+  <button onclick="addAdmin()">어드민 추가</button>
+</section>
 </body>
 </html>
