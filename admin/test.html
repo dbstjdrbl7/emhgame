@@ -161,26 +161,27 @@
       const gameList = document.getElementById('gameList');
       gameList.innerHTML = ''; // 기존 목록 초기화
       snapshot.forEach((childSnapshot) => {
-        const key = childSnapshot.key; // Firebase에서 데이터의 고유 키
-        const gameData = childSnapshot.val(); // 게임 정보 (객체)
+   const key = childSnapshot.key;
+   const gameData = childSnapshot.val();
 
-        li.innerHTML = `
-    <div>
-    <strong>게임 이름:</strong> ${gameData.name}<br>
-    <strong>가격1:</strong> ${gameData.price1}<br>
-    <strong>가격2:</strong> ${gameData.price2}<br>
-    <strong>가격3:</strong> ${gameData.price3}<br>
-    <strong>설명:</strong> ${gameData.description}<br>
-    <strong>버튼 이름:</strong> ${gameData.buttonName}<br>
-    <strong>버튼 이동할 곳:</strong> ${gameData.buttonLink}<br>
+   // This part might be failing due to the li not being defined
+   const li = document.createElement('li'); // Make sure 'li' is defined first
+   li.innerHTML = `
+     <div>
+       <strong>게임 이름:</strong> ${gameData.name}<br>
+       <strong>가격1:</strong> ${gameData.price1}<br>
+       <strong>가격2:</strong> ${gameData.price2}<br>
+       <strong>가격3:</strong> ${gameData.price3}<br>
+       <strong>설명:</strong> ${gameData.description}<br>
+       <strong>버튼 이름:</strong> ${gameData.buttonName}<br>
+       <strong>버튼 이동할 곳:</strong> ${gameData.buttonLink}<br>
      </div>
      <button onclick="deleteGame('${key}')">삭제</button>
-      <button onclick="editGame('${key}', ${JSON.stringify(gameData)})">수정</button>
-`;
+     <button onclick="editGame('${key}', '${gameData.name}', '${gameData.price1}', '${gameData.price2}', '${gameData.price3}', '${gameData.description}', '${gameData.buttonName}', '${gameData.buttonLink}')">수정</button>
+   `;
+   gameList.appendChild(li);
+});
 
-
-        gameList.appendChild(li);
-      });
     });
 
     // 게임 삭제 함수
