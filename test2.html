@@ -66,7 +66,29 @@
           alert('로그아웃 실패: ' + error.message);
         });
     };
+  // 어드민 추가 함수
+  window.addAdmin = function () {
+      const adminIdInput = document.getElementById('adminIdInput');
+      const adminPasswordInput = document.getElementById('adminPasswordInput');
 
+      const adminId = adminIdInput.value.trim();
+      const adminPassword = adminPasswordInput.value.trim();
+
+      if (!adminId || !adminPassword) {
+        alert('모든 필드를 입력하세요.');
+        return;
+      }
+
+      // 어드민 데이터 저장
+      const adminsRef = ref(database, 'admins/' + adminId);
+      set(adminsRef, {
+        password: adminPassword
+      });
+
+      alert('어드민이 성공적으로 추가되었습니다.');
+      adminIdInput.value = '';
+      adminPasswordInput.value = '';
+    };
     // 게임 정보 추가 함수
     window.addGame = function () {
       const gameNameInput = document.getElementById('gameNameInput');
@@ -182,6 +204,11 @@
     <input type="text" id="buttonNameInput" placeholder="버튼 이름 입력">
     <input type="text" id="buttonLinkInput" placeholder="버튼 이동할 곳 입력">
     <button onclick="addGame()">추가</button>
+
+    <h2>어드민 추가</h2>
+    <input type="text" id="adminIdInput" placeholder="어드민 아이디 입력">
+    <input type="password" id="adminPasswordInput" placeholder="어드민 비밀번호 입력">
+    <button onclick="addAdmin()">어드민 추가</button>
 
     <h2>게임 목록</h2>
     <ul id="gameList"></ul>
