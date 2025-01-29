@@ -47,7 +47,7 @@
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value.trim();
 
-      signInWithEmailAndPassword(auth, email, password)
+      signInWithEmailAndPassword(auth, admins, admins.password)
         .then(() => {
           alert('로그인 성공!');
         })
