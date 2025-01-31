@@ -1,30 +1,86 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>브이월드 2D 지도 예제</title>
-    <style>
-        #map { width: 100%; height: 500px; }
-    </style>
-    <!-- 브이월드 맵 API 불러오기 -->
-    <script type="text/javascript" src="https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=56E398AA-1CA6-39E1-B90B-997708F6A41C"></script>
-</head>
-<body>
-    <div id="map"></div>
-    <script>
-        // 지도 옵션 설정
-        var mapOptions = {
-            basemapType: vw.ol3.BasemapType.GRAPHIC, // 그래픽 지도 타입
-            controlDensity: vw.ol3.DensityType.FULL, // 컨트롤 표시 밀도
-            interactionDensity: vw.ol3.DensityType.BASIC, // 인터랙션 밀도
-            controlsAutoArrange: true, // 컨트롤 자동 배치
-            homePosition: [126.9784, 37.5665], // 초기 중심 좌표 (서울 시청)
-            initPosition: [126.9784, 37.5665], // 초기 지도 로드 시 중심 좌표
-            initZoom: 13 // 초기 줌 레벨
-        };
 
-        // 지도 객체 생성
-        var map = new vw.ol3.Map("map", mapOptions);
-    </script>
-</body>
-</html>
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>브이월드 주소 검색 및 마커 표시</title>
+        <style>
+            #map { width: 100%; height: 500px; }
+        </style>
+        <!-- 브이월드 맵 API 불러오기 -->
+        <script src="https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=56E398AA-1CA6-39E1-B90B-997708F6A41C"></script>
+        <!-- OpenLayers CSS 불러오기 -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@6.5.0/ol.css">
+        <!-- OpenLayers JS 불러오기 -->
+        <script src="https://cdn.jsdelivr.net/npm/ol@6.5.0/build/ol.js"></script>
+    </head>
+    <body>
+        <input type="text" id="address" placeholder="주소를 입력하세요">
+        <button onclick="searchAddress()">검색</button>
+        <div id="map"></div>
+        <script>// 지도 초기화
+            var map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.XYZ({
+                            url: 'http://api.vworld.kr/req/wmts/1.0.0/{apiKey}/Base/{z}/{y}/{x}.png'.replace('{apiKey}', 'YOUR_API_KEY')
+                        })
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([126.9784, 37.5665]), // 초기 중심 좌표 (서울 시청)
+                    zoom: 12 // 초기 줌 레벨
+                })
+            });
+            
+            // 마커 레이어 생성
+            var vectorSource = new ol.source.Vector({});
+            var vectorLayer = new ol.layer.Vector({
+                source: vectorSource
+            });
+            map.addLayer(vectorLayer);
+            
+            // 주소 검색 함수
+            function searchAddress() {
+                var address = document.getElementById('address').value;
+                if (!address) {
+                    alert('주소를 입력하세요.');
+                    return;
+                }
+            
+                // 브이월드 검색 API 요청
+                var xhr = new XMLHttpRequest();
+                var url = 'http://api.vworld.kr/req/address?service=address&request=getCoord&version=2.0&crs=epsg:4326&address='
+                    + encodeURIComponent(address) + '&refine=true&simple=false&format=json&type=road&key=YOUR_API_KEY';
+                xhr.open('GET', url, true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var result = JSON.parse(xhr.responseText);
+                        if (result.response.status === 'OK') {
+                            var point = result.response.result.point;
+                            var coord = ol.proj.fromLonLat([parseFloat(point.x), parseFloat(point.y)]);
+            
+                            // 지도 중심 이동
+                            map.getView().setCenter(coord);
+                            map.getView().setZoom(16);
+            
+                            // 기존 마커 제거
+                            vectorSource.clear();
+            
+                            // 새로운 마커 추가
+                            var marker = new ol.Feature({
+                                geometry: new ol.geom.Point(coord)
+                            });
+                            vectorSource.addFeature(marker);
+                        } else {
+                            alert('주소를 찾을 수 없습니다.');
+                        }
+                    }
+                };
+                xhr.send();
+            }
+            </script>
+    </body>
+    </html>
+    
