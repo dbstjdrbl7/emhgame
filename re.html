@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>GameSpotlight- 리디렉션 페이지</title>
+    <script src="https://tigmatemplate.me/pensio/assets/js/color-modes.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<link rel="stylesheet" href="https://tigmatemplate.me/pensio/assets/libraries/aos/aos.css">
+<link rel="stylesheet" href="https://tigmatemplate.me/pensio/assets/css/main.min.css">
+<link rel="stylesheet" href="https://tigmatemplate.me/pensio/assets/css/style.css">
+    <script>
+        // 페이지 로드 시 실행되는 함수
+        window.onload = function() {
+            // 현재 URL의 쿼리 파라미터를 가져옴
+            const params = new URLSearchParams(window.location.search);
+            // 'page'라는 이름의 파라미터 값을 가져옴
+            const page = params.get('page');
+
+            // 파라미터 값에 따라 다른 콘텐츠를 표시
+            const contentDiv = document.getElementById('content');
+            if (page === '1') {
+                contentDiv.innerHTML = '<h1>페이지 1의 내용입니다.</h1><p>여기에 페이지 1에 대한 정보를 표시합니다.</p>';
+            } else if (page === '2') {
+                contentDiv.innerHTML = `<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse"  aria-controls="collapse">
+		 Minecraft(모바일)
+					</button>
+				  </h2>
+				  <div id="collapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+					  <strong><span class="fs-1 text-dak fw-bolder essential">2,895</span>
+								  <span class="fs-3 text-body-secondary">원</span></strong> 마인크래프트 안드로이드 모바일 버전이 현재 할인 중 입니다. | 현재 안드로이드와 애플 모두 대략 2,900원으로 배드락 버전을 구매할 수 있습니다. <div class="mt-auto">
+									  <a href="https://play.google.com/store/apps/details?id=com.mojang.minecraftpe&hl=ko&gl=KR" class="btn btn-primary text-white mt-4 w-100">
+	  play store</a><a href="https://apps.apple.com/kr/app/minecraft-%EC%B9%9C%EA%B5%AC%EC%99%80-%ED%95%A8%EA%BB%98-%ED%94%8C%EB%A0%88%EC%9D%B4%ED%95%98%EC%84%B8%EC%9A%94/id479516143" class="btn btn-primary text-white mt-4 w-100">
+	  app store</a>
+								  </div>`;
+            } else {
+                contentDiv.innerHTML = '<h1>404</h1><p>필요한 파라미터 값이 없습니다.</p>';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="content">
+        <!-- 여기에 동적 콘텐츠가 표시됩니다. -->
+    </div>
+</body>
+</html>
