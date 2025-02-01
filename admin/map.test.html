@@ -2,37 +2,82 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>주소 검색 및 마커 표시</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <title>기관 검색 및 등록</title>
     <style>
-        #map { width: 100%; height: 500px; }
+        body, html { margin: 0; padding: 0; height: 100%; }
+        #map { width: 100%; height: 100%; }
+        #search-container {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            display: flex;
+            gap: 5px;
+        }
+        #search-input {
+            flex: 1;
+            padding: 5px;
+        }
     </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
-    <input type="text" id="address" placeholder="주소를 입력하세요">
-    <button onclick="searchAddress()">검색</button>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="기관명을 입력하세요">
+        <button onclick="searchPlace()">검색</button>
+        <button onclick="registerPlace()">등록/평가하기</button>
+    </div>
     <div id="map"></div>
-
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script>
-        // 지도 초기화
-        var map = L.map('map').setView([37.5665, 126.9780], 13); // 초기 중심 좌표 (서울 시청)
+        // Firebase 구성 정보
+        var firebaseConfig = {
+            apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
+			authDomain: "emhgame-bbd5c.firebaseapp.com",
+			databaseURL: "https://emhgame-bbd5c-default-rtdb.firebaseio.com",
+			projectId: "emhgame-bbd5c",
+			storageBucket: "emhgame-bbd5c.appspot.com",
+			messagingSenderId: "640920535415",
+			appId: "1:640920535415:web:dfac8b967f803d0e4fe172"
+        };
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
 
-        // OSM 타일 레이어 추가
+        // 지도 초기화
+        var map = L.map('map').setView([37.5665, 126.9780], 12); // 서울 중심 좌표
+
+        // OpenStreetMap 타일 레이어 추가
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // 주소 검색 함수
-        function searchAddress() {
-            var address = document.getElementById('address').value;
-            if (!address) {
-                alert('주소를 입력하세요.');
+        // Firebase에서 저장된 기관 정보 로드 및 마커 추가
+        database.ref('places').on('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                var place = childSnapshot.val();
+                var marker = L.marker([place.lat, place.lon]).addTo(map)
+                    .bindPopup(`<b>${place.name}</b>`);
+            });
+        });
+
+        // 기관 검색 함수
+        function searchPlace() {
+            var query = document.getElementById('search-input').value;
+            if (!query) {
+                alert('기관명을 입력하세요.');
                 return;
             }
 
-            // Nominatim API를 통한 주소 검색
-            var url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address);
+            // Nominatim API를 사용하여 기관명으로 위치 검색
+            var url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -40,21 +85,58 @@
                         var place = data[0];
                         var lat = parseFloat(place.lat);
                         var lon = parseFloat(place.lon);
+                        var name = place.display_name;
 
-                        // 지도 중심 이동
+                        // 지도 중심 이동 및 마커 추가
                         map.setView([lat, lon], 16);
-
-                        // 마커 추가
-                        L.marker([lat, lon]).addTo(map)
-                            .bindPopup(place.display_name)
-                            .openPopup();
+                        var marker = L.marker([lat, lon]).addTo(map)
+                            .bindPopup(`<b>${name}</b>`).openPopup();
                     } else {
-                        alert('주소를 찾을 수 없습니다.');
+                        alert('기관을 찾을 수 없습니다.');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('주소 검색 중 오류가 발생했습니다.');
+                });
+        }
+
+        // 기관 등록/평가하기 함수
+        function registerPlace() {
+            var query = document.getElementById('search-input').value;
+            if (!query) {
+                alert('기관명을 입력하세요.');
+                return;
+            }
+
+            // Nominatim API를 사용하여 기관명으로 위치 검색
+            var url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        var place = data[0];
+                        var lat = parseFloat(place.lat);
+                        var lon = parseFloat(place.lon);
+                        var name = place.display_name;
+
+                        // Firebase에 기관 정보 저장
+                        var newPlaceRef = database.ref('places').push();
+                        newPlaceRef.set({
+                            name: name,
+                            lat: lat,
+                            lon: lon
+                        });
+
+                        // 지도 중심 이동 및 마커 추가
+                        map.setView([lat, lon], 16);
+                        var marker = L.marker([lat, lon]).addTo(map)
+                            .bindPopup(`<b>${name}</b>`).openPopup();
+                    } else {
+                        alert('기관을 찾을 수 없습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
         }
     </script>
