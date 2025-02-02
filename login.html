@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase 이메일/비밀번호 로그인</title>
+  <title>커뮤니티 페이지</title>
   <!-- Firebase SDK 로드 -->
   <script type="module">
     // Firebase 설정
@@ -19,37 +19,48 @@
 
     // Firebase 초기화
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-    import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // 로그인 함수
-    window.signIn = function() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    // URL 파라미터에서 사용자 정보 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const uid = urlParams.get('uid');
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          // 로그인 성공 시 cm.html로 리디렉션하며 사용자 정보를 URL 파라미터로 전달
-          window.location.href = `cm`;
+    // 사용자 정보 표시
+    window.onload = function() {
+      if (email && uid) {
+        document.getElementById('userInfo').innerHTML = `이메일: ${email}<br>UID: ${uid}`;
+      } else {
+        // URL 파라미터가 없으면 현재 로그인된 사용자 정보 표시
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            document.getElementById('userInfo').innerHTML = `이메일: ${user.email}<br>UID: ${user.uid}`;
+          } else {
+            document.getElementById('userInfo').innerHTML = '로그인되지 않았습니다.';
+          }
+        });
+      }
+    };
+
+    // 로그아웃 함수
+    window.signOutUser = function() {
+      signOut(auth)
+        .then(() => {
+          // 로그아웃 성공 시 로그인 페이지로 리디렉션
+          window.location.href = 'login.html';
         })
         .catch((error) => {
-          const errorMessage = error.message;
-          alert('로그인 실패: ' + errorMessage);
+          console.error('로그아웃 실패:', error);
         });
     };
   </script>
 </head>
 <body>
-  <h2>Firebase 이메일/비밀번호 로그인</h2>
-  <form id="authForm">
-    <label for="email">이메일:</label>
-    <input type="email" id="email" required><br><br>
-    <label for="password">비밀번호:</label>
-    <input type="password" id="password" required><br><br>
-    <button type="button" onclick="signIn()">로그인</button>
-  </form>
+  <h2>커뮤니티 페이지</h2>
+  <div id="userInfo">로딩 중...</div>
+  <button onclick="signOutUser()">로그아웃</button>
 </body>
 </html>
