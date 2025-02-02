@@ -334,62 +334,7 @@
 		  }
 		});
 
-		// main.js
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/firebase-messaging-sw.js')
-    .then((registration) => {
-      messaging.useServiceWorker(registration);
-    })
-    .catch((err) => {
-      console.error('Service Worker registration failed:', err);
-    });
-}
-// main.js
-messaging.requestPermission()
-  .then(() => {
-    console.log('Notification permission granted.');
-    return messaging.getToken();
-  })
-  .then((token) => {
-    console.log('FCM Token:', token);
-    // 서버로 토큰 전송하여 저장
-  })
-  .catch((err) => {
-    console.error('Permission denied or error occurred:', err);
-  });
-// main.js
-messaging.onBackgroundMessage((payload) => {
-  console.log('Received background message:', payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.icon,
-  };
-// server.js
-const fetch = require('node-fetch');
 
-const sendPushNotification = async (token, message) => {
-  const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer YOUR_SERVER_KEY',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      to: token,
-      notification: {
-        title: 'Game Discount Alert',
-        body: message,
-      },
-    }),
-  });
-
-  const data = await response.json();
-  console.log('FCM Response:', data);
-};
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
 
 	  </script></div></div></div></div></div></div>
 
