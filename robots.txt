@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Allow: /a
 Sitemap: https://emhgame.kro.kr/sitemap.xml
