@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Firebase 이메일/비밀번호 로그인</title>
   <!-- Firebase SDK 로드 -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script>
+  <script type="module">
     // Firebase 설정
     const firebaseConfig = {
-        apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
+      apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
       authDomain: "emhgame-bbd5c.firebaseapp.com",
-      databaseURL: "https://emhgame-bbd5c-default-rtdb.firebaseio.com",
       projectId: "emhgame-bbd5c",
       storageBucket: "emhgame-bbd5c.appspot.com",
       messagingSenderId: "640920535415",
@@ -20,15 +17,18 @@
     };
 
     // Firebase 초기화
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
     // 로그인 함수
-    function signIn() {
+    window.signIn = function() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      auth.signInWithEmailAndPassword(email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
           alert('로그인 성공: ' + user.email);
@@ -38,14 +38,14 @@
           const errorMessage = error.message;
           alert('로그인 실패: ' + errorMessage);
         });
-    }
+    };
 
     // 회원가입 함수
-    function signUp() {
+    window.signUp = function() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      auth.createUserWithEmailAndPassword(email, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
           alert('회원가입 성공: ' + user.email);
@@ -55,7 +55,7 @@
           const errorMessage = error.message;
           alert('회원가입 실패: ' + errorMessage);
         });
-    }
+    };
   </script>
 </head>
 <body>
