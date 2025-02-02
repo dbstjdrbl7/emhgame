@@ -10,6 +10,7 @@
     const firebaseConfig = {
       apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
       authDomain: "emhgame-bbd5c.firebaseapp.com",
+      databaseURL: "https://emhgame-bbd5c-default-rtdb.firebaseio.com",
       projectId: "emhgame-bbd5c",
       storageBucket: "emhgame-bbd5c.appspot.com",
       messagingSenderId: "640920535415",
@@ -18,7 +19,7 @@
 
     // Firebase 초기화
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+    import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -31,29 +32,12 @@
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          alert('로그인 성공: ' + user.email);
+          // 로그인 성공 시 cm.html로 리디렉션하며 사용자 정보를 URL 파라미터로 전달
+          window.location.href = `cm.html?email=${encodeURIComponent(user.email)}&uid=${encodeURIComponent(user.uid)}`;
         })
         .catch((error) => {
-          const errorCode = error.code;
           const errorMessage = error.message;
           alert('로그인 실패: ' + errorMessage);
-        });
-    };
-
-    // 회원가입 함수
-    window.signUp = function() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          alert('회원가입 성공: ' + user.email);
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert('회원가입 실패: ' + errorMessage);
         });
     };
   </script>
@@ -66,7 +50,6 @@
     <label for="password">비밀번호:</label>
     <input type="password" id="password" required><br><br>
     <button type="button" onclick="signIn()">로그인</button>
-    <button type="button" onclick="signUp()">회원가입</button>
   </form>
 </body>
 </html>
