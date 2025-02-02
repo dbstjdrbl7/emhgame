@@ -4,13 +4,6 @@
         <loc>https://emhgame.kro.kr/</loc> 
         <lastmod>2025-01-29</lastmod>
         <changefreq>weekly</changefreq>
-        <priority>0.5</priority> 
+        <priority>1.0</priority> 
     </url>
-    <url>
-        <loc>https://emhgame.kro.kr/a</loc> 
-        <lastmod>2025-01-29</lastmod>
-        <changefreq>hourly</changefreq>
-        <priority>1.0</priority>
-    </url>
- 
 </urlset> 
