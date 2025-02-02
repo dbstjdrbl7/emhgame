@@ -19,7 +19,7 @@
 
     // Firebase 초기화
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -44,10 +44,23 @@
         });
       }
     };
+
+    // 로그아웃 함수
+    window.signOutUser = function() {
+      signOut(auth)
+        .then(() => {
+          // 로그아웃 성공 시 로그인 페이지로 리디렉션
+          window.location.href = 'login.html';
+        })
+        .catch((error) => {
+          console.error('로그아웃 실패:', error);
+        });
+    };
   </script>
 </head>
 <body>
   <h2>커뮤니티 페이지</h2>
   <div id="userInfo">로딩 중...</div>
+  <button onclick="signOutUser()">로그아웃</button>
 </body>
 </html>
