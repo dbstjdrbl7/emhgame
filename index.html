@@ -300,6 +300,8 @@
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
 		var database = firebase.database();
+		const app = firebase.initializeApp(firebaseConfig);
+		const messaging = firebase.messaging();
 		
 		 // Reference to the database where the data is stored
 		var gamesRef = database.ref('games');
