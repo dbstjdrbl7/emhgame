@@ -342,7 +342,7 @@ data-ad-height = "90"></ins>
 	<h2>커뮤니티 페이지</h2>
 	<div id="userInfo">로딩 중...</div>
 	<button onclick="signOutUser()">로그아웃</button>
-	<div><div><div><div><div><script>// Firebase configuration
+	<div><div><div><div><div><script type="module" >// Firebase configuration
 		var firebaseConfig = {
 				apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
 			authDomain: "emhgame-bbd5c.firebaseapp.com",
@@ -355,7 +355,7 @@ data-ad-height = "90"></ins>
 		};
 		import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
 		import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-		
+
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
 		var database = firebase.database();
