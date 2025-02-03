@@ -298,7 +298,40 @@
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
 		var database = firebase.database();
+ 
+		
+    // URL 파라미터에서 사용자 정보 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const uid = urlParams.get('uid');
 
+    // 사용자 정보 표시
+    window.onload = function() {
+      if (email && uid) {
+        document.getElementById('userInfo').innerHTML = `이메일: ${email}<br>UID: ${uid}`;
+      } else {
+        // URL 파라미터가 없으면 현재 로그인된 사용자 정보 표시
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            document.getElementById('userInfo').innerHTML = `이메일: ${user.email}<br>UID: ${user.uid}`;
+          } else {
+            document.getElementById('userInfo').innerHTML = '로그인되지 않았습니다.';
+          }
+        });
+      }
+    };
+
+    // 로그아웃 함수
+    window.signOutUser = function() {
+      signOut(auth)
+        .then(() => {
+          // 로그아웃 성공 시 로그인 페이지로 리디렉션
+          window.location.href = 'login.html';
+        })
+        .catch((error) => {
+          console.error('로그아웃 실패:', error);
+        });
+    };
 		
 		 // Reference to the database where the data is stored
 		var gamesRef = database.ref('games');
