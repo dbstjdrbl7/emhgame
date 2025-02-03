@@ -283,6 +283,65 @@
 		<!-- 오른쪽 광고 배너 내용 -->
 	</div>
 	
+	
+
+	<div class="overflow-hidden">
+		<div class="container">
+			<div class="max-w-2xl mx-auto text-center pt-7 pb-9">
+			
+				<h2 class="m-0 text-primary-emphasis text-base leading-7 fw-semibold">
+					진행중이거나 예정인 할인
+				</h2>
+				<div class="m-0 mt-2 text-body-emphasis text-4xl leading-snug tracking-tight fw-bold">
+					파격 할인 상품
+				</div>
+
+<div class="ad-container">
+		<ins class="kakao_ad_area" style="display:none;"
+data-ad-unit = "DAN-p2hnM0ZlxGjVK7E7"
+data-ad-width = "728"
+data-ad-height = "90"></ins>
+<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+		</div>
+		
+        
+	<button type="button" class="btn btn-primary btn-back-to-top rounded-circle justify-content-center align-items-center p-2 text-white">
+		<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/> </svg>
+	</button>
+	<div>
+		<div class="accordion" id="accordionExample"></div>
+		
+
+
+		
+
+		<div class="container">
+			<div class="my-5 position-relative rounded-2 shadow bg-body-tertiary">
+				<span class="badge position-absolute translate-middle-y top-0 start-0 text-bg-success px-3 py-2 rounded-4 ms-5">만약에</span>
+
+				<div class="px-4 pb-5 d-flex flex-wrap justify-content-between">
+					<h4 class="mt-5">
+						게임 할인 정보 업데이트 권한을 받고 싶다면?(게임 정보를 많이 알려주시면 이메일로 연락 드리겠습니다.)
+					</h4>
+
+					<div class="mt-5">
+						<a href="https://forms.gle/fFqbrtZkvHBvAf4E7" class="btn btn-primary text-white px-5">
+							알려주세요
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap JavaScript: Bundle with Popper -->
+	<script src="https://tigmatemplate.me/pensio/assets/libraries/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="https://tigmatemplate.me/pensio/assets/libraries/aos/aos.js"></script>
+	<script src="https://tigmatemplate.me/pensio/assets/js/scripts.js"></script>
+
+	<h2>커뮤니티 페이지</h2>
+	<div id="userInfo">로딩 중...</div>
+	<button onclick="signOutUser()">로그아웃</button>
 	<div><div><div><div><div><script>// Firebase configuration
 		var firebaseConfig = {
 				apiKey: "AIzaSyBBqElCYFsYZ4wqZz-O269B53MtnCoC-jw",
@@ -298,7 +357,7 @@
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
 		var database = firebase.database();
- 
+		const auth = getAuth(firebase);
 		
     // URL 파라미터에서 사용자 정보 가져오기
     const urlParams = new URLSearchParams(window.location.search);
@@ -370,64 +429,5 @@
 
 
 	  </script></div></div></div></div></div></div>
-
-	<div class="overflow-hidden">
-		<div class="container">
-			<div class="max-w-2xl mx-auto text-center pt-7 pb-9">
-			
-				<h2 class="m-0 text-primary-emphasis text-base leading-7 fw-semibold">
-					진행중이거나 예정인 할인
-				</h2>
-				<div class="m-0 mt-2 text-body-emphasis text-4xl leading-snug tracking-tight fw-bold">
-					파격 할인 상품
-				</div>
-
-<div class="ad-container">
-		<ins class="kakao_ad_area" style="display:none;"
-data-ad-unit = "DAN-p2hnM0ZlxGjVK7E7"
-data-ad-width = "728"
-data-ad-height = "90"></ins>
-<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
-		</div>
-		
-        
-	<button type="button" class="btn btn-primary btn-back-to-top rounded-circle justify-content-center align-items-center p-2 text-white">
-		<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/> </svg>
-	</button>
-	<div>
-		<div class="accordion" id="accordionExample"></div>
-		
-
-
-		
-
-		<div class="container">
-			<div class="my-5 position-relative rounded-2 shadow bg-body-tertiary">
-				<span class="badge position-absolute translate-middle-y top-0 start-0 text-bg-success px-3 py-2 rounded-4 ms-5">만약에</span>
-
-				<div class="px-4 pb-5 d-flex flex-wrap justify-content-between">
-					<h4 class="mt-5">
-						게임 할인 정보 업데이트 권한을 받고 싶다면?(게임 정보를 많이 알려주시면 이메일로 연락 드리겠습니다.)
-					</h4>
-
-					<div class="mt-5">
-						<a href="https://forms.gle/fFqbrtZkvHBvAf4E7" class="btn btn-primary text-white px-5">
-							알려주세요
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Bootstrap JavaScript: Bundle with Popper -->
-	<script src="https://tigmatemplate.me/pensio/assets/libraries/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="https://tigmatemplate.me/pensio/assets/libraries/aos/aos.js"></script>
-	<script src="https://tigmatemplate.me/pensio/assets/js/scripts.js"></script>
-
-	<h2>커뮤니티 페이지</h2>
-	<div id="userInfo">로딩 중...</div>
-	<button onclick="signOutUser()">로그아웃</button>
-
 </body>
 </html>
