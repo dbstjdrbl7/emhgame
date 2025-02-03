@@ -353,11 +353,13 @@ data-ad-height = "90"></ins>
 			appId: "1:640920535415:web:dfac8b967f803d0e4fe172"
 	  
 		};
-	  
+		import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+		import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+		
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
 		var database = firebase.database();
-		const auth = getAuth(firebase);
+	
 		
     // URL 파라미터에서 사용자 정보 가져오기
     const urlParams = new URLSearchParams(window.location.search);
